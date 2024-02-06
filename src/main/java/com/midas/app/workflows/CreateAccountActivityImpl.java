@@ -36,22 +36,20 @@ public class CreateAccountActivityImpl implements CreateAccountActivity {
   @Override
   public Account createAccount(Account details) {
     try {
-      if (details.getEmail() == null
-          || details.getFirstName() == null
-          || details.getLastName() == null) {
+      if (details.getEmail() == null || details.getFirstName() == null || details.getLastName() == null) {
         throw new InvalidRequestException("Email and firstName are required fields");
       }
 
       Stripe.apiKey = stripeApiKey;
 
       // Check if the account already exists
-      //      Account existingAccount = accountRepository.findByEmail(details.getEmail());
-      //      if (existingAccount != null) {
-      //        // Account already exists, update updatedAt and save changes
-      //        existingAccount.setUpdatedAt(OffsetDateTime.now());
-      //        accountRepository.save(existingAccount);
-      //        throw new ResourceAlreadyExistsException("Account already exists");
-      //      }
+       Account existingAccount = accountRepository.findByEmail(details.getEmail());
+       if (existingAccount != null) {
+         // Account already exists, update updatedAt and save changes
+         existingAccount.setUpdatedAt(OffsetDateTime.now());
+         accountRepository.save(existingAccount);
+         throw new ResourceAlreadyExistsException("Account already exists");
+       }
 
       CustomerCreateParams params =
           CustomerCreateParams.builder()
